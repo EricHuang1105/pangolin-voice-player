@@ -18,8 +18,12 @@
     
     <!-- 精靈封面區 -->
     <div class="cover-wrapper" :class="{ 'is-playing': isPlaying }">
-      <div class="cover-image">
+      
+        <div class="cover-logo">
+          <img src="/logo.png" alt="LOGO" /> </div>
+
         <!-- 精靈封面圖片 -->
+        <div class="cover-image">
         <img src="/pangolin.webp" alt="精靈封面" @error="handleImageError" />
       </div>
     </div>
@@ -256,6 +260,14 @@ onBeforeUnmount(() => {
 </script>
 
 <style>
+
+@font-face {
+  font-family: 'ChenYuluoyan-2.0-Thin';
+  src: url('/ChenYuluoyan-2.0-Thin.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 html, body {
   margin: 0;
   padding: 0;
@@ -342,36 +354,71 @@ html, body {
 }
 
 .title {
-  font-size: 32px; /* 幫您把字體放大，看起來會更清楚 */
+  font-size: 38px;
   letter-spacing: 2px;
   opacity: 0.9;
-  font-weight: normal;
+  font-weight: bold;
   font-family: 'ChenYuluoyan-2.0-Thin', cursive; /* 🌟 這行就是讓字體變化的關鍵！ */
   margin: 0;
 }
 
 
 .cover-wrapper {
-  width: 260px;
-  height: 260px;
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 10px 30px rgba(139, 107, 76, 0.2);
-  margin-bottom: 30px;
-  margin-top: 50px; /* 稍微往下推，避免跟按鈕或標題擠在一起 */
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  background-color: rgba(255, 255, 255, 0.6);
+  width: 300px;  
+  height: 300px; 
+  border-radius: 24px; 
+  overflow: visible;
+  
+  border: 2px solid rgba(255, 255, 255, 0.8);
+
+  margin-top: 50px; 
+  margin-bottom: 50px;
+  background-color:  transparent;
+  box-shadow: 0 12px 35px rgba(139, 107, 76, 0.2);
+  transition: transform 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.cover-wrapper.is-playing {
-  box-shadow: 0 15px 40px rgba(139, 107, 76, 0.3);
-  transform: scale(1.02);
+/* 🌟 新增 LOGO 的絕對定位與尺寸設定 */
+.cover-logo {
+  position: absolute;
+  /* 透過 top 和 right 調整 LOGO 在框框內的右上角位置 */
+  top: 55px;    /* 距離框框頂部的距離 */
+  right: 53px;  /* 距離框框右側的距離 */
+  
+  /* 控制 LOGO 圖片的大小，您可以根據實際圖片比例微調 */
+  width: 70px;  
+  height: auto;
+  
+  /* 確保 LOGO 永遠浮在最上層，且不參與任何呼吸動畫 */
+  z-index: 5; 
+  pointer-events: none; /* 讓滑鼠點擊可以穿過 LOGO，不影響操作 */
 }
 
-.cover-image, .cover-image img {
+.cover-logo img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+}
+
+.cover-wrapper.is-playing .cover-image {
+  animation: imgBreathe 4s ease-in-out infinite; 
+}
+
+.cover-image {
+  width: 230px;        /* 👈 縮小圖片寬度（原本是 100%），留下的空間就會變成框 */
+  height: 230px;       /* 👈 縮小圖片高度 */
+  border-radius: 16px; /* 幫圖片本身也加上一點圓角，看起來更精緻 */
+  overflow: visible;    /* 確保圖片呼吸放大時不會超出它自己的邊界 */
+}
+
+.cover-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 
 .quote-section {
@@ -464,4 +511,17 @@ html, body {
   width: 30px;
   height: 30px;
 }
+
+@keyframes imgBreathe {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08); /* 吸氣：讓裡面的圖片稍微放大 8% 塞滿外框，產生微凸感 */
+  }
+  100% {
+    transform: scale(1); /* 吐氣：慢慢縮回原本大小 */
+  }
+}
+
 </style>
