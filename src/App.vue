@@ -1,6 +1,9 @@
 <template>
   <div class="player-container">
     <!-- BGM 背景音樂獨立開關 (右上角) -->
+    
+    <div class="content-wrapper">
+    
     <button class="bgm-toggle-btn" @click="toggleBgm" title="切換背景音樂">
       <!-- 播放中圖示 -->
       <svg v-if="isBgmPlaying" viewBox="0 0 24 24" class="bgm-icon">
@@ -12,11 +15,7 @@
       </svg>
     </button>
 
-    <!-- 頂部/背景裝飾區 -->
-    <div class="header">
-      <h1 class="title">Echoes of Deepspace</h1>
-    </div>
-
+    
     <!-- 精靈封面區 -->
     <div class="cover-wrapper" :class="{ 'is-playing': isPlaying }">
       <div class="cover-image">
@@ -25,23 +24,22 @@
       </div>
     </div>
 
-    <!-- 專屬微醺語錄 -->
-    <div class="quote-section">
-      <p class="quote-text">「在微醺的氣泡裡，藏著我想對你說的秘密。」</p>
+   <!-- 頂部/背景裝飾區 -->
+    <div class="header">
+      <h1 class="title">穿山甲精靈</h1>
     </div>
 
     <!-- 進度條與時間軸 -->
     <div class="progress-section">
-      <span class="time">{{ formatTime(currentTime) }}</span>
       <input 
+        ref="sliderRef" 
         type="range" 
         class="progress-slider" 
         :max="duration" 
-        :value="currentTime" 
+        step="any"          :value="currentTime" 
         @input="onSliderDrag" 
         @change="onSliderChange"
       />
-      <span class="time">{{ formatTime(duration) }}</span>
     </div>
 
     <!-- 控制列 (動態音波 + 播放按鈕) -->
@@ -61,12 +59,12 @@
 
       <!-- 右側動態音波 -->
       <canvas ref="canvasRightRef" class="visualizer-canvas" width="80" height="40"></canvas>
-    </div>
+    </div> </div>
 
     <!-- 隱藏的主語音頻元素 (有音波動效) -->
     <audio 
       ref="audioRef" 
-      src="/audio/civet.mp3" 
+      src="pangolin-voice.WAV" 
       crossorigin="anonymous"
       @timeupdate="onTimeUpdate"
       @loadedmetadata="onLoadedMetadata"
@@ -80,8 +78,7 @@
       loop 
       crossorigin="anonymous"
     ></audio>
-  </div>
-</template>
+  </div> </template>
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
@@ -93,10 +90,21 @@ const currentTime = ref(0)
 const duration = ref(0)
 const isDragging = ref(false)
 
+const sliderRef = ref(null)
 const audioRef = ref(null) // 主語音
 const bgmRef = ref(null)   // 背景音樂
 const canvasLeftRef = ref(null)
 const canvasRightRef = ref(null)
+
+// 請將這段程式碼加在 <script setup> 裡面，例如放在定義完 refs 變數的下方
+
+onMounted(() => {
+  // 將背景音樂音量設定為 20% (數值範圍是 0.0 到 1.0)
+  // 如果覺得太大聲或太小聲，可以調整 0.2 這個數字
+  if (bgmRef.value) {
+    bgmRef.value.volume = 0.1;
+  }
+})
 
 // --- Web Audio API 變數 ---
 let audioContext = null
@@ -196,7 +204,7 @@ const togglePlay = () => {
 }
 
 const onTimeUpdate = (e) => {
-  if (!isDragging.value) {
+  if (!isDragging.value && isPlaying.value) {
     currentTime.value = e.target.currentTime
   }
 }
@@ -208,6 +216,14 @@ const onLoadedMetadata = (e) => {
 const onEnded = () => {
   isPlaying.value = false
   currentTime.value = 0
+
+  if (audioRef.value) {
+    audioRef.value.currentTime = 0
+  }
+  
+  if (sliderRef.value) {
+    sliderRef.value.value = 0
+  }
 }
 
 const onSliderDrag = (e) => {
@@ -239,10 +255,19 @@ onBeforeUnmount(() => {
 })
 </script>
 
+<style>
+body {
+  margin: 0;
+  padding: 0;
+  /* 建議把 body 的背景色也設成跟播放器一樣的顏色，這樣上下滑動時才不會露出白底 */
+  background-color: #3b3831; 
+}
+</style>
+
 <style scoped>
 @font-face {
-  font-family: 'ChenYuluoyan';
-  src: url('/fonts/ChenYuluoyan-2.0-Thin.ttf') format('truetype');
+  font-family: 'ChenYuluoyan-2.0-Thin';
+  src: url('ChenYuluoyan-2.0-Thin.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
@@ -251,7 +276,7 @@ onBeforeUnmount(() => {
   max-width: 400px;
   min-height: 100vh;
   margin: 0 auto;
-  background: linear-gradient(145deg, #a8c0cf, #62829c, #2a4c6a);
+  background: linear-gradient(145deg, #fdfbf7 0%, #f0e5d3 50%, #e3ccb8 100%);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -259,24 +284,34 @@ onBeforeUnmount(() => {
   padding: 30px 20px;
   box-sizing: border-box;
   font-family: sans-serif;
-  color: white;
+  
+  color: #5c4a3d;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.content-wrapper {
+  position: relative; /* 讓內部的絕對定位以這個隱形箱子為基準 */
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 /* BGM 右上角開關按鈕樣式 */
 .bgm-toggle-btn {
   position: absolute;
-  top: 30px;
-  right: 25px;
+  top:-20px;
+  right: 20px;
+
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(92, 74, 61, 0.2);
+  background: rgba(255, 255, 255, 0.5);
   backdrop-filter: blur(5px);
-  color: white;
+  color: #5c4a3d;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -295,34 +330,37 @@ onBeforeUnmount(() => {
   height: 18px;
 }
 
+/* 頂部裝飾 */
 .header {
-  position: absolute;
-  top: 40px;
   text-align: center;
   width: 100%;
+  margin-bottom: 50px;
 }
 
 .title {
-  font-size: 14px;
+  font-size: 32px; /* 幫您把字體放大，看起來會更清楚 */
   letter-spacing: 2px;
-  opacity: 0.8;
-  font-weight: 300;
+  opacity: 0.9;
+  font-weight: normal;
+  font-family: 'ChenYuluoyan-2.0-Thin', cursive; /* 🌟 這行就是讓字體變化的關鍵！ */
+  margin: 0;
 }
+
 
 .cover-wrapper {
   width: 260px;
   height: 260px;
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 10px 30px rgba(139, 107, 76, 0.2);
   margin-bottom: 30px;
   margin-top: 50px; /* 稍微往下推，避免跟按鈕或標題擠在一起 */
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.6);
 }
 
 .cover-wrapper.is-playing {
-  box-shadow: 0 15px 40px rgba(255, 255, 255, 0.2);
+  box-shadow: 0 15px 40px rgba(139, 107, 76, 0.3);
   transform: scale(1.02);
 }
 
@@ -342,8 +380,8 @@ onBeforeUnmount(() => {
   font-family: 'ChenYuluoyan', cursive;
   font-size: 26px;
   line-height: 1.5;
-  color: #ffffff;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  color: #5c4a3d;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
 }
 
 .progress-section {
@@ -370,7 +408,7 @@ onBeforeUnmount(() => {
   background: transparent;
   height: 4px;
   border-radius: 2px;
-  background-color: rgba(255, 255, 255, 0.3);
+  background-color: rgba(92, 74, 61, 0.15);
   outline: none;
   cursor: pointer;
 }
@@ -401,10 +439,10 @@ onBeforeUnmount(() => {
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(92, 74, 61, 0.2);
+  background: rgba(255, 255, 255, 0.5);
   backdrop-filter: blur(5px);
-  color: white;
+  color: #5c4a3d;
   display: flex;
   align-items: center;
   justify-content: center;
