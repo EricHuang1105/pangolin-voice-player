@@ -277,6 +277,7 @@ body {
 .player-container {
   max-width: 400px;
   min-height: 100vh;
+  height: 100dvh;
   margin: 0 auto;
   background: linear-gradient(145deg, #fdfbf7 0%, #f0e5d3 50%, #e3ccb8 100%);
   display: flex;
@@ -284,6 +285,7 @@ body {
   align-items: center;
   justify-content: center;
   padding: 30px 20px;
+  padding-bottom: env(safe-area-inset-bottom);
   box-sizing: border-box;
   font-family: sans-serif;
   
