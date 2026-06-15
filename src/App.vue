@@ -260,7 +260,9 @@ body {
   margin: 0;
   padding: 0;
   /* 建議把 body 的背景色也設成跟播放器一樣的顏色，這樣上下滑動時才不會露出白底 */
-  background-color: #3b3831; 
+  background-color: #3b3831;
+  overflow: hidden; 
+  height: 100vh;
 }
 </style>
 
