@@ -275,17 +275,17 @@ body {
 }
 
 .player-container {
-  max-width: 400px;
-  height: calc(100dvh - 80px);
-  min-height: calc(100dvh - 80px);
+  max-width: 100dvh;
+  width: 100%;
   margin: 0 auto;
   background: linear-gradient(145deg, #fdfbf7 0%, #f0e5d3 50%, #e3ccb8 100%);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 30px 20px;
-  padding-bottom: env(safe-area-inset-bottom);
+
+  padding-top: 50px;
+  padding-bottom: 120px;
   box-sizing: border-box;
   font-family: sans-serif;
   
