@@ -15,7 +15,12 @@
       </svg>
     </button>
 
-    
+    <button class="leave-btn" @click="handleLeave" title="離開">
+      <svg viewBox="0 0 24 24" class="leave-icon">
+        <path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+      </svg>
+    </button>
+
     <!-- 精靈封面區 -->
     <div class="cover-wrapper" :class="{ 'is-playing': isPlaying }">
       
@@ -207,6 +212,17 @@ const togglePlay = () => {
   isPlaying.value = !isPlaying.value
 }
 
+// --- 控制離開按鈕邏輯 ---
+const handleLeave = () => {
+  // 首選：嘗試退回上一頁
+  if (window.history.length > 1) {
+    window.history.back()
+  } else {
+    // 備案：如果沒有上一頁 (例如是直接貼網址進來的)，嘗試關閉視窗
+    window.close()
+  }
+}
+
 const onTimeUpdate = (e) => {
   if (!isDragging.value && isPlaying.value) {
     currentTime.value = e.target.currentTime
@@ -339,6 +355,40 @@ html, body {
 .bgm-toggle-btn:hover {
   background: rgba(255, 255, 255, 0.2);
   transform: scale(1.1);
+}
+
+/* 離開按鈕樣式 (左上角) */
+.leave-btn {
+  position: absolute;
+  top: -20px; /* 與 BGM 按鈕保持相同高度 */
+  left: 20px; /* 貼齊左邊 */
+
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  
+  /* 🌟 請確保這兩個顏色與你的 BGM 按鈕一致，以符合各個動物的主題色 */
+  border: 1px solid rgba(92, 74, 61, 0.2);
+  color: #5c4a3d;
+  
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.leave-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+}
+
+.leave-icon {
+  width: 18px;
+  height: 18px;
 }
 
 .bgm-icon {
