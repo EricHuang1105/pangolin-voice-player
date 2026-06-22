@@ -312,8 +312,8 @@ html, body {
   margin: 0;
   padding: 0;
   width: 100%;
-  height: 100%;
-  background-color: #e3ccb8 !important; 
+  height: 100dvh !important;
+  background-color: #fbe4ae !important; 
   overflow: hidden;
 }
 </style>
@@ -329,7 +329,7 @@ html, body {
   width: 100%;
   height: 100vh;
   
-  background: linear-gradient(145deg, #fdfbf7 0%, #f0e5d3 50%, #e3ccb8 100%);
+  background: linear-gradient(145deg,#fffaf0 0%, #fbe4ae 50%, #e8cb84 100%);
   
   display: flex;
   flex-direction: column;
