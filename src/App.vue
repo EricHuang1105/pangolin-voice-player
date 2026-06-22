@@ -73,7 +73,7 @@
     <!-- 隱藏的主語音頻元素 (有音波動效) -->
     <audio 
       ref="audioRef" 
-      src="/pangolin-voice.wav" 
+      src="/pangolin-voice.wav"  
       crossorigin="anonymous"
       @timeupdate="onTimeUpdate"
       @loadedmetadata="onLoadedMetadata"
@@ -85,7 +85,7 @@
       ref="bgmRef" 
       src="/bgm.mp3" 
       loop 
-      crossorigin="anonymous"
+      crossorigin="anonymous"   
     ></audio>
   </div> </template>
 
