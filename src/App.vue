@@ -73,7 +73,7 @@
     <!-- 隱藏的主語音頻元素 (有音波動效) -->
     <audio 
       ref="audioRef" 
-      src="pangolin-voice.WAV" 
+      src="/pangolin-voice.wav" 
       crossorigin="anonymous"
       @timeupdate="onTimeUpdate"
       @loadedmetadata="onLoadedMetadata"
